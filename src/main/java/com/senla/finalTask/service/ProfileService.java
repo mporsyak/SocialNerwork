@@ -1,5 +1,7 @@
 package com.senla.finalTask.service;
 
+import com.senla.finalTask.exceptions.UserAlreadyExistException;
+import com.senla.finalTask.exceptions.UserNotFoundException;
 import com.senla.finalTask.model.User;
 import com.senla.finalTask.model.UserSubscription;
 import com.senla.finalTask.repository.UserDetailsRepository;
@@ -19,6 +21,26 @@ public class ProfileService {
         this.userSubscriptionRepository = userSubscriptionRepository;
     }
 
+    public User registration(User user) throws UserAlreadyExistException {
+        if (userDetailsRepository.findByUsername(user.getUsername()) != null) {
+            throw new UserAlreadyExistException("Пользователь с таким именем существует");
+        }
+        return userDetailsRepository.save(user);
+    }
+
+    public User getOne(Long id) throws UserNotFoundException {
+        User user = (User) userDetailsRepository.findById(id);
+        if (user == null) {
+            throw new UserNotFoundException("Пользователь не найден");
+        }
+        return user;
+    }
+
+
+    public Long delete(Long id) {
+        userDetailsRepository.deleteById(id);
+        return id;
+    }
 
     public User changeSubscription(User channel, User subscriber) {
         List<UserSubscription> subcriptions = channel.getSubscribers()

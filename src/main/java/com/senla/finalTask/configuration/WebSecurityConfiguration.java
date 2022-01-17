@@ -1,6 +1,6 @@
 package com.senla.finalTask.configuration;
 
-import com.senla.finalTask.service.UserServise;
+import com.senla.finalTask.service.ProfileService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -13,10 +13,10 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
-   private final UserServise userServise;
+   private final ProfileService profileService;
 
-    public WebSecurityConfiguration(UserServise userServise) {
-        this.userServise = userServise;
+    public WebSecurityConfiguration(ProfileService profileService) {
+        this.profileService = profileService;
     }
 
 
@@ -37,9 +37,5 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .permitAll();
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userServise)
-                .passwordEncoder(NoOpPasswordEncoder.getInstance());
-    }
+
 }

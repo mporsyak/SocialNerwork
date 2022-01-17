@@ -1,26 +1,56 @@
 package com.senla.finalTask.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.senla.finalTask.exceptions.UserAlreadyExistException;
 import com.senla.finalTask.model.User;
 import com.senla.finalTask.model.UserSubscription;
 import com.senla.finalTask.model.Views;
 import com.senla.finalTask.service.ProfileService;
-import com.senla.finalTask.service.UserServise;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("profile")
+@RequestMapping("/profile")
 public class ProfileController {
     private final ProfileService profileService;
-    private UserServise userServise;
 
-    public ProfileController(ProfileService profileService, UserServise userServise) {
+
+    public ProfileController(ProfileService profileService) {
         this.profileService = profileService;
-        this.userServise = userServise;
+
+    }
+    @PostMapping
+    public ResponseEntity registration(@RequestBody User user) {
+        try {
+            profileService.registration(user);
+            return ResponseEntity.ok("Пользователь успешно сохранен");
+        } catch (UserAlreadyExistException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Произошла ошибка");
+        }
+    }
+
+
+    @GetMapping
+    public ResponseEntity getOneUser(@RequestParam Long id) {
+        try {
+            return ResponseEntity.ok(profileService.getOne(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Произошла ошибка");
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteUser(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(profileService.delete(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Произошла ошибка");
+        }
     }
 
     @GetMapping("{id}")
@@ -59,13 +89,5 @@ public class ProfileController {
         return profileService.changeSubscriptionStatus(channel, subscriber);
     }
 
-    @PostMapping("profile/{id}")
-    public String updateProfile(
-            @AuthenticationPrincipal User user,
-            @RequestParam String password,
-            @RequestParam String email
-    ) {
-        return userServise.updateProfile(user, password, email);
-    }
 }
 

@@ -20,22 +20,5 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 
 public class UserServiseTest {
-    @Autowired
-    private UserServise userServise;
-    @MockBean
-    private UserDetailsRepository userDetailsRepository;
-    @MockBean
-    private PasswordEncoder passwordEncoder;
 
-    @Test
-    public void addUser() {
-        User user = new User();
-        boolean isUserCreate = userServise.addUser(user);
-
-        Assert.assertTrue(isUserCreate);
-        Assert.assertNotNull(user.getActivationCode());
-        Assert.assertTrue(CoreMatchers.is(user.getRoles()).matches(Collections.singleton(Role.USER)));
-
-        Mockito.verify(userDetailsRepository, Mockito.times(1)).save(user);
-    }
 }
