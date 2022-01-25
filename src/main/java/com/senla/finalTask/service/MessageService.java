@@ -99,7 +99,7 @@ public class MessageService {
         return updateMessage;
     }
 
-    public Message create(Message message, User user) throws IOException {
+    public Message create(Message message) throws IOException {
         message.setCreationDate(LocalDateTime.now());
         fillMeta(message);
         Message updateMessage = messageRepository.save(message);

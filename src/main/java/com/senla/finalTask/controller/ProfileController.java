@@ -1,10 +1,12 @@
 package com.senla.finalTask.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.senla.finalTask.exceptions.NotFoundException;
 import com.senla.finalTask.model.User;
 import com.senla.finalTask.model.UserSubscription;
 import com.senla.finalTask.model.Views;
 import com.senla.finalTask.service.ProfileService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,6 +55,29 @@ public class ProfileController {
             @PathVariable("subscriberId") User subscriber
     ) {
         return profileService.changeSubscriptionStatus(channel, subscriber);
+    }
+
+
+    @PostMapping("/registration")
+    public ResponseEntity registration(@RequestBody User user) {
+        try {
+            profileService.registration(user);
+            return ResponseEntity.ok("Пользователь успешно сохранен");
+        } catch (NotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Произошла ошибка");
+        }
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteUser(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(profileService.delete(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Произошла ошибка");
+        }
     }
 }
 

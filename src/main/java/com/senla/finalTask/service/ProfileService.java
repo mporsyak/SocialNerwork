@@ -1,5 +1,6 @@
 package com.senla.finalTask.service;
 
+import com.senla.finalTask.exceptions.NotFoundException;
 import com.senla.finalTask.model.User;
 import com.senla.finalTask.model.UserSubscription;
 import com.senla.finalTask.repository.UserDetailsRepository;
@@ -45,5 +46,15 @@ public class ProfileService {
         subscription.setActive(!subscription.isActive());
 
         return userSubscriptionRepository.save(subscription);
+    }
+    public User registration(User user) throws NotFoundException {
+        if (userDetailsRepository.findByUsername(user.getUsername()) != null) {
+            throw new NotFoundException("Пользователь с таким именем существует");
+        }
+        return userDetailsRepository.save(user);
+    }
+    public Long delete(Long id) {
+        userDetailsRepository.deleteById(id);
+        return id;
     }
 }

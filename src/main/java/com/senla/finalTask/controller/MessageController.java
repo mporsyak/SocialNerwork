@@ -44,7 +44,7 @@ public class MessageController {
             @RequestBody Message message,
             @AuthenticationPrincipal User user
     ) throws IOException {
-        return messageService.create(message, user);
+        return messageService.create(message);
     }
 
     @PutMapping("{id}")
